@@ -1,0 +1,209 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title id ="title" >测试反应速度</title>
+<link href="./css.css" rel="stylesheet" type="text/css">
+</head>
+<body>
+
+	<table id ="t">
+		
+	</table>
+	<canvas id="canvas"> 你的浏览器不支持此功能。 </canvas>
+	<hr/>
+	<a href = "http://www.lirunlong.com">访问我的主页</a>
+		<script type="text/javascript">
+		var t = document.getElementById("t");
+		var ti = document.getElementById("title");
+		//1,移动   2，pc
+		var dev = 2;
+		var wi;
+		var he;
+		if(window.screen.height	<= window.screen.width){
+			wi =0.6 * t.offsetWidth;
+			he = wi * 7/8;
+		}else{
+			wi =  t.offsetWidth;
+			he = wi * 8/7;
+		}
+		
+ 		var canv = document.getElementById("canvas");
+ 		canv.width = wi;
+ 		canv.height = he;
+ 		var c =canv.getContext("2d");
+ 		c.lineWidth = 0.01*wi;
+ 		
+ 		var fontSize = wi*0.1;
+ 		fontB = fontSize+"px Georgia";
+ 		var fontSizeS = wi*0.05;
+ 		fontS = fontSizeS +"px Georgia";
+ 		
+		var bg = function(ctx){
+
+			ctx .fillStyle="#aaeeff";
+			ctx.fillRect(0,0,wi,he);
+		} 
+		
+		var Time ={
+			best:999999,
+			thisTime:999999,
+			startTime:0,
+		}
+		
+		var ar={
+			enable:false,
+			id:1,
+			x:0,
+			y:0,
+			w:0.5*wi,
+			h:0.5*he,
+			color:"#440044",
+			fColor:"#aaffaa",
+			text:"开始",
+			draw:function(ctx){
+				ctx .fillStyle=ar.color;
+				ctx.fillRect(ar.x,ar.y,ar.w,ar.h);
+				ctx .strokeStyle="#ffff00";
+				ctx.strokeRect(ar.x,ar.y,ar.w,ar.h);
+				ctx .fillStyle=ar.fColor;
+				ctx.fillText(ar.text,ar.x+(ar.w-2*fontSize)/2,ar.y+fontSize +(ar.h-fontSize)/2);
+			},
+			action:function(x,y){
+				if(ar.enable&&x>ar.x && x<ar.x+ar.w && y> ar.y && y<ar.y+ar.h){
+					activ(ar.id);
+				}
+			}
+		}
+		
+		var activ = function(id){
+			bg(c);
+			if(id == 2){
+				ar.id = 0;
+				Time.thisTime = Date.now()-Time.startTime;
+				var goal = "";
+				if(Time.thisTime<Time.best){
+					Time.best = Time.thisTime;
+					goal ="已经创造新纪录！"
+				}else{
+					goal = "没有创造新纪录。";
+				}
+				ar.enable = true;
+				ar.text = "再来";
+				ar.w = 0.8*wi;
+				ar.h=0.16*wi;
+				ar.x= (wi-ar.w)/2;
+				ar.y = (he-ar.h)*0.8;
+				ar.color="#440044";
+				c.font = fontB;
+				ar.draw(c);
+				c.fillStyle = "#ff0000";
+				c.font = fontB;
+				var line1H=1.5*fontSize;
+				c.fillText(goal,(wi-8*fontSize)/2,line1H);
+				c.fillStyle = "#000000";
+				var line2H = line1H+fontSize+fontSizeS;
+				c.font = fontS;
+				c.fillText(" 本次："+Time.thisTime/1000+"秒",0,line2H);
+				var line3H = line2H +1.5*fontSizeS;
+				c.fillText(" 最佳："+Time.best/1000+"秒",0,line3H);
+				ti.innerHTML = "我的最短反应时间为"+Time.best/1000+"秒，谁能超越!";
+				c.fillStyle = "#ff0000";
+				c.fillText(" 分享此页面到朋友圈，可展示您的最佳成绩。",0,line3H+1.5*fontSizeS);
+				return;
+			}
+			if(id == 0){
+				ar.enable = true;
+				ar.id = 1;
+				ar.text = "开始";
+				ar.w = 0.8*wi;
+				ar.h=0.16*wi;
+				ar.x= (wi-ar.w)/2;
+				ar.y = (he-ar.h)*0.8;
+				c.font = fontB;
+				ar.color="#440044";
+				ar.draw(c);
+				c.fillStyle = "#440044";
+				c.font = fontB;
+				var line1H=1.5*fontSize;
+				c.fillText("测试你的反应速度",(wi-8*fontSize)/2,line1H);
+				c.font = fontS;
+				c.fillStyle = "#ff0000";
+				c.fillText("  www.lirunlong.com",(wi-17*fontSizeS)/2,he-0.5*fontSizeS);
+				c.fillText("微信公众号：红鳞绿羽",(wi-10*fontSizeS)/2,line1H+1.5*fontSizeS);
+				c.fillStyle = "#000000";
+				var line2H = line1H+fontSize+2*fontSizeS;
+				c.fillText(" 规则：点击开始后，当屏幕中出现红色方块,",0,line2H);
+				var line3H = line2H +1.5*fontSizeS;
+				c.fillText(" 马上点击它。",0,line3H);
+				return;
+			}
+			if(id ==1){
+				ar.id = 2;
+				ar.text="点我";
+				ar.enable = false;
+				c.fillStyle = "#440044";
+				c.font = fontB;
+				var line1H=1.5*fontSize;
+				c.fillText("注意红色方块！",(wi-7*fontSize)/2,line1H);
+				var t = 1000+3000*Math.random();
+		//		var t = 1000;
+				setTimeout(showRed,t);
+			}
+			
+			
+			
+		}
+		
+		var showRed = function(){
+			bg(c);
+			ar.enable = true;
+			ar.color ="#ff0000";
+			ar.w = wi*0.25;
+			ar.h = ar.w;
+			ar.x = (wi-ar.w)*Math.random();
+			ar.y = (he-ar.h)*Math.random();
+			ar.draw(c);
+			Time.startTime = Date.now();
+		}
+		
+		activ(0);
+		
+		
+		
+		
+		
+		var isTouch = false; 
+
+		inputPosition = function(x,y){
+			var xx = -canv.offsetLeft+x;
+			var yy = -canv.offsetTop+y;
+			ar.action(xx,yy);
+		}
+		
+		addEventListener("touchstart", 
+ 	 		function touchSatrt(e) {
+ 				isTouch = true;
+ 				inputPosition(e.touches[0].pageX,e.touches[0].pageY);
+			}
+			,
+			false
+		);
+		
+		addEventListener("mousedown", 
+				function onMouseDown(e) {
+ 	 			if(isTouch == false){
+ 	 				inputPosition(e.pageX,e.pageY);
+ 	 			}
+ 	 			
+ 	 		},
+ 	 		false
+ 	 	);
+		
+		
+		
+		</script>
+</body>
+</html>
